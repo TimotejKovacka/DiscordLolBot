@@ -4,12 +4,10 @@ const config = require("./config.json");
 const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
 const apiKey = config.API_KEY;
 
-const polskyVodici = {
-    '335381586562252802': "Ryba v silonkach",
-}
-
+const polskyVodici = config.PolskyVodici;
 let versions = [];
 let champions = [];
+
 async function fetchSumByName(name) {
     const link = `https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}?api_key=${apiKey}`;
     const response = await fetch(link);
@@ -32,6 +30,23 @@ function findChamp(key) {
         }
     }
 }
+
+async function updateChampions() {
+    const response = await fetch(`http://ddragon.leagueoflegends.com/cdn/${versions[0]}/data/en_US/champion.json`);
+    let data = await response.json();
+    champions = data['data']
+}
+
+async function checkVersion() {
+    const response = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
+    let data = await response.json();
+    if (data[0] != versions[0]) {
+        versions=data
+        return true;
+    };
+    return false;
+}
+
 
 const prefix = "!>";
 client.on("messageCreate", function(message) {
@@ -204,3 +219,4 @@ Promise.resolve(fetch("https://ddragon.leagueoflegends.com/api/versions.json")).
         });
     });
 });
+setInterval(checkVersion().then((bool) => {if (bool) updateChampions();}), 3600000);
