@@ -2,11 +2,7 @@ const Discord = require("discord.js");
 const fetch = require("node-fetch");
 const config = require("./config.json");
 const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
-const apiKey = "RGAPI-153ff792-780a-46a6-aaa2-8116da9d896a";
-//RGAPI-153ff792-780a-46a6-aaa2-8116da9d896a  api_key
-//5VGBHEo7kFjSKCsfJ4DKj5gfJJwxZCm__oGZnpdh7HFY1yUNb5sLHl-Y1u7hLrxs55nkAUpkmE3Cbg    puuid
-//EWah6YIyItwxkE6mju85nDXX2x-On6CtB6lg9fOiHd6hWhM
-//EUN1_3052244429
+const apiKey = config.API_KEY;
 
 const polskyVodici = {
     '335381586562252802': "Ryba v silonkach",
