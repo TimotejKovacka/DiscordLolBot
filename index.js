@@ -45,14 +45,7 @@ client.on("messageCreate", function(message) {
     const commandBody = message.content.slice(prefix.length);
     const args = commandBody.split(' ');
     const command = args.shift().toLowerCase();
-    if (command === "ping") {
-        const timeTaken = Date.now() - message.createdTimestamp;
-        message.reply(`Pong! This message had a latency of ${timeTaken}ms.`);
-    } else if (command === "sum") {
-      const numArgs = args.map(x => parseFloat(x));
-      const sum = numArgs.reduce((counter, x) => counter += x);
-      message.reply(`The sum of all the arguments you provided is ${sum}!`);
-    } else if (command === "s") {
+    if (command === "g") {
         let summonerName = "";
         if (!args.length && message.author['id'] in polskyVodici) {
             summonerName = polskyVodici[message.author['id']];
@@ -102,7 +95,7 @@ client.on("messageCreate", function(message) {
                             .addFields(
                                 //{ name: 'Regular field title', value: 'Some value here' },
                                 //{ name: '\u200B', value: '\u200B' },
-                                { name: 'Summoner', value: `${matchData['participants'][0]['summonerName']}
+                                { name: 'Summoner', value: `[${matchData['participants'][0]['summonerName']}](https://u.gg/lol/profile/eun1/${matchData['participants'][0]['summonerName']}/overview)
                                 ${matchData['participants'][1]['summonerName']}
                                 ${matchData['participants'][2]['summonerName']}
                                 ${matchData['participants'][3]['summonerName']}
@@ -142,6 +135,66 @@ client.on("messageCreate", function(message) {
                 });
             });
         });
+    } else if (command === "sum") {
+      const numArgs = args.map(x => parseFloat(x));
+      const sum = numArgs.reduce((counter, x) => counter += x);
+      message.reply(`The sum of all the arguments you provided is ${sum}!`);
+    } else if (command === "s") {
+        let summonerName = "";
+        if (!args.length && message.author['id'] in polskyVodici) {
+            summonerName = polskyVodici[message.author['id']];
+        } else if (!args.length && !(message.author['id'] in polskyVodici)) {
+            message.reply(`You are not a polsky vodic please provide summoner name`);
+            return;
+        } else {
+            summonerName = args.join('%20');
+        }
+        const exampleEmbed = new Discord.MessageEmbed()
+                            .setColor('#d21404')
+                            .setTitle(`For more information about ${summonerName}`)
+                            .setURL(`https://u.gg/lol/profile/eun1/${summonerName}/overview`)
+                            .setAuthor({ name: "Korgis", iconURL: "https://timotejkovacka.com/images/Picture6.png", url: "https://www.timotejkovacka.com"})
+                            .setDescription('Game Length: '+ minutes + "minutes " + seconds + "seconds")
+                            .setThumbnail(`http://ddragon.leagueoflegends.com/cdn/${versions[0]}/img/profileicon/${sumdata['profileIconId']}.png`)
+                            .addFields(
+                                //{ name: 'Regular field title', value: 'Some value here' },
+                                //{ name: '\u200B', value: '\u200B' },
+                                { name: 'Summoner', value: `${matchData['participants'][0]['summonerName']}
+                                ${matchData['participants'][1]['summonerName']}
+                                ${matchData['participants'][2]['summonerName']}
+                                ${matchData['participants'][3]['summonerName']}
+                                ${matchData['participants'][4]['summonerName']}`, inline: true },
+                                { name: 'Champion', value: `${champs[0]}
+                                ${champs[1]}
+                                ${champs[2]}
+                                ${champs[3]}
+                                ${champs[4]}`, inline: true },
+                                { name: 'Rank', value: `${sranks[0]}
+                                ${sranks[1]}
+                                ${sranks[2]}
+                                ${sranks[3]}
+                                ${sranks[4]}`, inline: true },
+                                { name: 'Summoner', value: `${matchData['participants'][5]['summonerName']}
+                                ${matchData['participants'][6]['summonerName']}
+                                ${matchData['participants'][7]['summonerName']}
+                                ${matchData['participants'][8]['summonerName']}
+                                ${matchData['participants'][9]['summonerName']}`, inline: true },
+                                { name: 'Champion', value: `${champs[5]}
+                                ${champs[6]}
+                                ${champs[7]}
+                                ${champs[8]}
+                                ${champs[9]}`, inline: true },
+                                { name: 'Rank', value: `${sranks[5]}
+                                ${sranks[6]}
+                                ${sranks[7]}
+                                ${sranks[8]}
+                                ${sranks[9]}`, inline: true },
+                            )
+                            .setImage('https://i.imgur.com/8wJPEzp.png')
+                            .setTimestamp()
+                            .setFooter({ text: 'Out of pure curiosity', iconURL: 'https://timotejkovacka.com/images/Picture6.png' });
+                        const channel  = client.channels.cache.get(message.channelId);
+                        channel.send({ embeds: [exampleEmbed]});
     }
 });
 Promise.resolve(fetch("https://ddragon.leagueoflegends.com/api/versions.json")).then(data => {
